@@ -1,5 +1,8 @@
 <template>
   <div class="map">
+
+    <AddressLookup></AddressLookup>
+
     <MglMap :accessToken="accessToken" :mapStyle.sync="mapStyle" container="map-parent" @load="onMapLoaded" :zoom="zoom">
       <MglNavigationControl position="top-right" />
       <MglGeolocateControl position="top-right" />
@@ -13,13 +16,14 @@ import sidebar from "@/components/sidebar.vue";
 // MAPBOX IMPORTS
 import Mapbox from "mapbox-gl";
 import { MglMap, MglNavigationControl, MglGeolocateControl, MglPopup, } from "vue-mapbox";
+import AddressLookup from "../views/AddressLookup.vue";
 
 export default {
   name: 'home',
-  components: { MglMap, MglNavigationControl, MglGeolocateControl , sidebar},
+  components: { MglMap, MglNavigationControl, MglGeolocateControl, AddressLookup , sidebar},
   data(){
     return {
-      accessToken: 
+      accessToken:
       "pk.eyJ1IjoiZW1wdHlib3gtZGVzaWducyIsImEiOiJjanBtM3E3ajAwbDF0NDJsa2N0OWh4M3p0In0.ZhciPKsk9UUSjUN44kJrcw",
       mapStyle: "mapbox://styles/emptybox-designs/cjpq0tslf1asv2srjg6zdwf6k",
       stops: null,
@@ -52,5 +56,5 @@ export default {
 
   overflow: hidden;
 }
-  
+
 </style>
