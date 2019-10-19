@@ -4,17 +4,19 @@
       <MglNavigationControl position="top-right" />
       <MglGeolocateControl position="top-right" />
     </MglMap>
+    <sidebar />
   </div>
 </template>
 
 <script>
+import sidebar from "@/components/sidebar.vue";
 // MAPBOX IMPORTS
 import Mapbox from "mapbox-gl";
 import { MglMap, MglNavigationControl, MglGeolocateControl, MglPopup, } from "vue-mapbox";
 
 export default {
   name: 'home',
-  components: { MglMap, MglNavigationControl, MglGeolocateControl },
+  components: { MglMap, MglNavigationControl, MglGeolocateControl , sidebar},
   data(){
     return {
       accessToken: 
