@@ -1,14 +1,26 @@
 <template>
 <div class="wrapper">
   <nav id="sidebar">
-    <div class="sidebar-header">
+    <div class="row">
+      <div class="col-12 sidebar-header">
         <h1>Data Drive</h1>
+      </div>
     </div>
-    <h4>Please Select Your Dataset</h4>
-    <div class="active">
-      <b-dropdown id="dropdown-1" text="Dropdown Button" class="m-md-2">
-        <b-dropdown-item v-for="(dataset, index) in datasets" :key="index">{{dataset.name}}</b-dropdown-item>
-      </b-dropdown>
+    <div class="row">
+      <div class="col-12">
+        <h4>Please Select Your Dataset</h4>
+        <div class="active">
+          <b-dropdown id="dropdown-1" text="Dropdown Button" class="m-md-2">
+            <b-dropdown-item v-for="(dataset, index) in datasets" :key="index">{{dataset.name}}</b-dropdown-item>
+          </b-dropdown>
+        </div>
+      </div>
+    </div>
+    <div class="spacer-md"></div>
+    <div class="row">
+      <div class="col-8 active mx-auto">
+        <button type="button" class="btn btn-primary" @click="download">Download</button>
+      </div>
     </div>
   </nav>
 </div>
@@ -22,18 +34,23 @@ export default {
     return {
     }
   },
-  mounted(){
-  },
   computed:{
     ...mapGetters({
       datasets: 'getdatasetNames',
     })
+  },
+  methods:{
+    download(){
+      console.log("downloading dataset");
+    }
   }
-
 }
 </script>
 
 <style lang="scss">
+.spacer-md{
+  padding: 4rem;
+}
 .wrapper {
   display: flex;
   width: 100%;
