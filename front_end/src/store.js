@@ -30,7 +30,10 @@ export default new Vuex.Store({
       state.datasetAddress = newDatasetAddress
     },
     setDatasetBlockGroups (state, newDatasetBlockGroups) {
-      state.datasetAddress = newDatasetBlockGroups
+      state.datasetBlockGroups = newDatasetBlockGroups
+    },
+    setData(state,newData){
+      state.data = newData
     }
   },
   actions: {
