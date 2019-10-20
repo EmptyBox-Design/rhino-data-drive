@@ -15,7 +15,9 @@ export default new Vuex.Store({
     ],
     boundingBox: [],
     datasetFlag: false,
-    blockGroupFlag: false
+    blockGroupFlag: false,
+    blockData: [],
+    datasetBlockGroups: []
   },
   getters:{
     getDatasetAddress (state){
@@ -53,6 +55,10 @@ export default new Vuex.Store({
     },
     setBlockGroupFlag(state, newBlockGroupFlag){
       state.blockGroupFlag = newBlockGroupFlag
+    },
+    setBlockData(state,newData){
+      console.log("TCL: setBlockData -> newData", newData)
+      state.blockData = newData;
     }
   },
   actions: {
@@ -146,17 +152,18 @@ export default new Vuex.Store({
       var minY = addressMatch.coordinates.y - .005
       var maxY = addressMatch.coordinates.y + .005
 
-      var blockGroupURL = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/10/query?where=1%3D1&text=&objectIds=&time=&geometry="+this.boundingBox+"&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelContains&relationParam=&outFields=&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=4326&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentsOnly=false&datumTransformation=&parameterValues=&rangeValues=&f=geojson"
+      // var blockGroupURL = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/10/query?where=1%3D1&text=&objectIds=&time=&geometry="+this.boundingBox+"&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelContains&relationParam=&outFields=&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=4326&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentsOnly=false&datumTransformation=&parameterValues=&rangeValues=&f=geojson"
 
       var blockGroupsURL = 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/10/query?where=1%3D1&text=&objectIds=&time=&geometry=' + minX + '%2C+' + maxY + '%2C+' + maxX + '%2C+' + minY + '&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelContains&relationParam=&outFields=&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=4326&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentsOnly=false&datumTransformation=&parameterValues=&rangeValues=&f=geojson'
 
-      console.log(blockGroupsURL)
 
       axios.get(blockGroupsURL, function(response){
 
       }).then(function(response){
-        console.log(response.data.features)
-
+        // console.log(response.data.features)
+        let blockGroupGeometry = response.data.features
+        console.log("TCL: blockGroupGeometry", blockGroupGeometry)
+        // console.log("TCL: blockGroupGeometry", blockGroupGeometry)
         context.commit('setDatasetBlockGroups', response.data)
 
         let stateCode = addressMatch.geographies['Census Blocks'][0].STATE
@@ -167,8 +174,9 @@ export default new Vuex.Store({
 
         return axios.get(countyURL)
         }).then(response =>{
-          console.log(response.data)
+          // console.log(response.data)
           let dataList = []
+          // all blocks for county
           for(var i = 0;i < response.data.length; i++){
 
             let stateCode = response.data[i][3]
@@ -181,22 +189,40 @@ export default new Vuex.Store({
             dataList.push([geoid, response.data[i][1]])
           }
           console.log("data list", dataList)
-          // context.commit('setData')
+          context.commit('setBlockData', dataList)
+
+          // blockGroupGeometry.map(function(d,i){
+          //   dataList.forEach(function(j,k){
+          //     // if(d)
+          //   })
+          // })
         })
+        
     },
     readACSDataURL: function(context, variable){
-      console.log("TCL: variable", variable)
+      console.log("TCL: context", context)
+      console.log(context.state.blockData)
+      console.log(context.state.datasetBlockGroups)
 
-      let stateCode = "36"
-      let county= "025"
-      let dataVariables = "B01001_001E"
+      context.commmit()
+      // context.state.datasetBlockGroups.map(function(d,i){
+      //   context.state.blockData.forEach(function(j,k){
+      //     if(d === j[0])
+      //   })
+      // })
+      // console.log("TCL: variable", variable)
 
-      let url = "https://api.census.gov/data/2017/acs/acs5?get=NAME,"+dataVariables+"&for=block%20group:*&in=state:"+stateCode+"%20county:"+county+"&key=7a8c4da8bd74f292935d694e25d4c4b6e38fd08a"
+      // let stateCode = "36"
+      // let county= "025"
+      // let dataVariables = "B01001_001E"
 
-      axios.get(url).then(response =>{
-          console.log("readACSDataURL",response)
-          context.commit('setDataset', true)
-        })
+      // let url = "https://api.census.gov/data/2017/acs/acs5?get=NAME,"+dataVariables+"&for=block%20group:*&in=state:"+stateCode+"%20county:"+county+"&key=7a8c4da8bd74f292935d694e25d4c4b6e38fd08a"
+
+      // axios.get(url).then(response =>{
+      //     console.log("readACSDataURL",response)
+      //     console.log(this.$store)
+      //     // context.commit('setDataset', true)
+      //   })
     }
   }
 })
