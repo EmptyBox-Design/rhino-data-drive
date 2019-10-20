@@ -128,7 +128,7 @@ function export3dm() {
 });
 
 
-
+  console.log(_file.objects());
  
 //--------------------------TEST TEST
   //  // TO RHINO POINT
@@ -164,18 +164,28 @@ function export3dm() {
 
 
 
-   console.log(_file.objects());
+   console.log(_file);
 
   //  //DOWNLOAD
 
   //_file.write("model9999.3dm", 0);
-  // //  var link = document.createElement("a");
-  //  var binaryData = [];
-  //  binaryData.push(_file.toByteArray());
+ 
 
-  // //   link.href = URL.createObjectURL(new Blob(binaryData,));
-	// // 	link.download = 'modelblob.3dm';
-	// // 	link.dispatchEvent( new MouseEvent( 'click' ) );
+    var base64 = _file.toByteArray();
+
+    var binaryString = window.atob(base64);
+    var binaryLen = binaryString.length;
+    var bytes = new Uint8Array(binaryLen);
+    for (var i = 0; i < binaryLen; i++) {
+      var ascii = binaryString.charCodeAt(i);
+      bytes[i] = ascii;
+    }
+    var blob = new Blob([bytes], {type: "application/octet-stream"});
+    
+    var link = document.createElement("a");
+    link.href = window.URL.createObjectURL(blob);
+    link.download = 'modelblob.3dm';
+    link.dispatchEvent( new MouseEvent( 'click' ) );
 
     
   // var download = document.createElement('a');
