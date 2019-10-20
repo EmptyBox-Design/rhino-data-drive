@@ -72,7 +72,6 @@ export default new Vuex.Store({
           ]
         }
       }
-
       // pick the first matching address as the most likely candidate
       var addressMatch = json.result.addressMatches[0]
 
@@ -118,7 +117,7 @@ export default new Vuex.Store({
 
             console.log(geoid)
           }
-
+        })
       })
     },
     readACSDataURL: function(context, variable){
@@ -133,9 +132,6 @@ export default new Vuex.Store({
       axios.get(url).then(response =>{
           console.log("readACSDataURL",response)
           context.commit('setDataset', true)
-        })
-        .catch(error =>{
-          console.log(error);
         })
     }
   }
