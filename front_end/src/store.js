@@ -9,11 +9,8 @@ export default new Vuex.Store({
     datasetAddress: null,
     datasetNames: [
       {
-        name:'test-1'
-      },
-      
-      {
-        name: 'test-2'
+        name:'Household Income',
+        variable: "B01001_001E"
       }
     ]
   },
@@ -26,7 +23,7 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    settDatasetAddress (state, newDatasetAddress) {
+    setDatasetAddress (state, newDatasetAddress) {
       state.datasetAddress = newDatasetAddress
     }
   },
@@ -39,11 +36,24 @@ export default new Vuex.Store({
         // do stuff
         // manipulate data here
         // once data is ready
-        context.commit('settDatasetAddress', response.data)
+        context.commit('setDatasetAddress', response.data)
       })
     },
-    readACSDataURL: function(context, data){
-      console.log(data);
+    readACSDataURL: function(context, variable){
+    console.log("TCL: variable", variable)
+
+      let stateCode = "36"
+      let county= "025"
+      let dataVariables = "B01001_001E"
+
+      let url = "https://api.census.gov/data/2017/acs/acs5?get=NAME,"+dataVariables+"&for=block%20group:*&in=state:"+stateCode+"%20county:"+county+"&key=7a8c4da8bd74f292935d694e25d4c4b6e38fd08a"
+
+      axios.get(url).then(response =>{
+        console.log(response)
+        })
+        .catch(error =>{
+        console.log(error);
+        })
     }
   }
 })
