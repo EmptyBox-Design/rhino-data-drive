@@ -37,6 +37,7 @@ export default {
   computed:{
     ...mapGetters({
       datasets: 'getdatasetNames',
+      datasetFlag: 'getDatasetFlag'
     })
   },
   methods:{
@@ -45,6 +46,16 @@ export default {
     },
     dataSelect(variable){
       this.$store.dispatch("readACSDataURL", variable)
+    },
+    // fires whenever the address is updated in the $store
+    modelInputSubscriber: function () {
+      this.$store.subscribe((mutation, state) => {
+        switch (mutation.type) {
+          case 'setDatasetFlag':
+            this.$store.dispatch()
+            break
+        }
+      })
     }
   }
 }
