@@ -57,9 +57,6 @@ export default new Vuex.Store({
   },
   actions: {
     readDatasetAddress: function(context,url){
-      console.log("TCL: url", url)
-      // axios.get(url, function(){
-
       var json = {
         "result": {
             "input": {
@@ -184,8 +181,8 @@ export default new Vuex.Store({
             dataList.push([geoid, response.data[i][1]])
           }
           console.log("data list", dataList)
+          // context.commit('setData')
         })
-      // })
     },
     readACSDataURL: function(context, variable){
       console.log("TCL: variable", variable)
