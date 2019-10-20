@@ -1,6 +1,6 @@
 console.log("I am an export to RHINO function");
 
-var mygeoJson = {
+var myPointJson = {
   "type": "Feature",
   "geometry": {
     "type": "Point",
@@ -9,6 +9,41 @@ var mygeoJson = {
   "properties": {
     "name": "Dinagat Islands"
   }
+}
+
+var sample = { "type": "FeatureCollection",
+"features": [
+  { "type": "Feature",
+    "geometry": {"type": "Point", "coordinates": [102.0, 0.5]},
+    "properties": {"prop0": "value0"}
+    },
+  { "type": "Feature",
+    "geometry": {
+      "type": "LineString",
+      "coordinates": [
+        [102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]
+        ]
+      },
+    "properties": {
+      "prop0": "value0",
+      "prop1": 0.0
+      }
+    },
+  { "type": "Feature",
+     "geometry": {
+       "type": "Polygon",
+       "coordinates": [
+         [ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0],
+           [100.0, 1.0], [100.0, 0.0] ]
+         ]
+
+     },
+     "properties": {
+       "prop0": "value0",
+       "prop1": {"this": "that"}
+       }
+     }
+  ]
 }
 
 // // global variables
@@ -23,58 +58,42 @@ rhino3dm().then(function(m) {
 });
 
 function export3dm() {
-  _points = new rhino.Point3dList();
-  _points.add(10,10,10);
-  _points.add(1,1,1);
 
+  // RHINO FILE
+  _file = new rhino.File3dm();
+  // units ? convert/ project X and Y... Z is default 0
 
-
-   var point = new rhino.Point([10,10,10]);
+   // TO RHINO POINT
+   var point = new rhino.Point([10,10,0]);
    point.setUserString("userstring","geometry");
+  //console.log("point", point);
 
-   console.log("point", point);
-
-  //  var curve = new rhino.Polyline();
-  //  curve.add(0,0,0);
-  //  curve.add(10,10,10);
-  //  console.log(curve);
-   //curve.setUserString("hello","elcin"); // this didnot worked use attributes instead!
+ 
+   // TO RHINO CURVE
+   _points = new rhino.Point3dList();
+   _points.add(10,10,10);
+   _points.add(1,1,1);
 
    var curve = rhino.NurbsCurve.create(false,1, _points);
    curve.setUserString("userstring","geometry");
+   //console.log(curve);
 
-   console.log(curve);
-
+   // ATTRIBUTES
    var att = new rhino.ObjectAttributes();
    att.setUserString("hello", "elcin");
-   //att.setUserString("layer", "0");
-   //curve.setUserString("hello","elcin");
-   // if close can we create rhino.surface or mesh
-
-  // How to set user string to Curve
-  // layers ? 
-
+   //att.setUserString("layer", "0"); // this sets the index, u might need to create the layer first
+  
   // attributes layer, name, geometry
 
-  _file = new rhino.File3dm();
-  // units 
+  
   //_file.objects().addCurve(curve);
   _file.objects().add(point, att); // this one worked
   _file.objects().addCurve(curve, att); 
  
 
- 
+   console.log(_file);
 
-   console.log(_file.objects());
 
-   var zip = new JSZip();
- 
-   zip.file("zipTest.3dm", _file)
-   zip.generateAsync({
-       type: "base64"
-   }).then(function(content) {
-       window.location.href = "data:application/zip;base64," + content;
-   });  
   
 }
 
