@@ -84,8 +84,8 @@ export default {
       this.$store.subscribe((mutation, state) => {
         switch (mutation.type) {
           case 'setDatasetAddress':
-            let lat = parseFloat(this.address[0].lat)
-            let lng = parseFloat(this.address[0].lon)
+            let lat = this.address.lat
+            let lng = this.address.lng
             this.mapFlyTo(lng, lat)
             break
         }
