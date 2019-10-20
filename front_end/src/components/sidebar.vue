@@ -19,7 +19,7 @@
     <div class="spacer-md"></div>
     <div class="row">
       <div class="col-8 active mx-auto">
-        <button type="button" class="btn btn-primary" @click="download">Download</button>
+        <b-button type="submit" variant="primary" @click="download">Download</b-button>
       </div>
     </div>
   </nav>

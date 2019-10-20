@@ -6,11 +6,23 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    datasetAddress: null
+    datasetAddress: null,
+    datasetNames: [
+      {
+        name:'test-1'
+      },
+      
+      {
+        name: 'test-2'
+      }
+    ]
   },
   getters:{
     getDatasetAddress (state){
       return state.datasetAddress
+    },
+    getdatasetNames(state){
+      return state.datasetNames
     }
   },
   mutations: {
@@ -29,6 +41,9 @@ export default new Vuex.Store({
         // once data is ready
         context.commit('settDatasetAddress', response.data)
       })
+    },
+    readACSDataURL: function(context, data){
+      console.log(data);
     }
   }
 })

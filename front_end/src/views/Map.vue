@@ -18,6 +18,8 @@ import Mapbox from "mapbox-gl";
 import { MglMap, MglNavigationControl, MglGeolocateControl, MglPopup, } from "vue-mapbox";
 import AddressLookup from "../views/AddressLookup.vue";
 
+import { mapState, mapGetters } from 'vuex'
+
 export default {
   name: 'home',
   components: { MglMap, MglNavigationControl, MglGeolocateControl, AddressLookup , sidebar},
@@ -33,11 +35,43 @@ export default {
   created(){
     this.mapbox = Mapbox;
   },
+  computed:{
+    ...mapGetters({
+      address: 'getDatasetAddress',
+    })
+  },
   mounted(){
+    this.modelInputSubscriber();
   },
   methods:{
     onMapLoaded(event){
       this.map = event.map
+    },
+    mapFlyTo(lng, lat){
+      // needs to be assigned to local variable
+      let mapCenter = [lng, lat]
+
+      this.map.flyTo({
+        center: mapCenter,
+        zoom: 15,
+        bearing: 0,
+          speed: 1.2,
+          curve: 1, 
+          easing: function (t) { return t; }
+        });
+    },
+    // fires whenever the address is updated in the $store
+    modelInputSubscriber: function () {
+      this.$store.subscribe((mutation, state) => {
+        switch (mutation.type) {
+          case 'settDatasetAddress':
+            console.log(this.address)
+            let lat = parseFloat(this.address[0].lat)
+            let lng = parseFloat(this.address[0].lon)
+            this.mapFlyTo(lng, lat)
+            break
+        }
+      })
     }
   }
 }
