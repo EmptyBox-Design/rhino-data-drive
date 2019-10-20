@@ -3,7 +3,7 @@
   <nav id="sidebar" class="p-3">
     <div class="row h-100">
       <div class="col sidebar-header pb-4">
-        <h1 class="font-weight-bold">Data Drive</h1>
+        <h1 class="font-weight-bold">Sparrow</h1>
       </div>
       <div class="col-12">
         <h5>Please Select Your Dataset</h5>
