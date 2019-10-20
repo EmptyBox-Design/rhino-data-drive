@@ -17,7 +17,8 @@ export default new Vuex.Store({
     datasetFlag: false,
     blockGroupFlag: false,
     blockData: [],
-    datasetBlockGroups: []
+    datasetBlockGroups: [],
+    dataBlocks: []
   },
   getters:{
     getDatasetAddress (state){
@@ -58,6 +59,9 @@ export default new Vuex.Store({
     },
     setBlockData(state,newData){
       state.blockData = newData;
+    },
+    setDataBlocks(state,newData){
+      state.dataBlocks = newData
     }
   },
   actions: {
@@ -163,7 +167,7 @@ export default new Vuex.Store({
         // console.log(response.data.features)
         let blockGroupGeometry = response.data.features
         // console.log("TCL: blockGroupGeometry", blockGroupGeometry)
-        context.commit('setDatasetBlockGroups', response.data)
+        context.commit('setDataBlocks', response.data)
 
         let stateCode = addressMatch.geographies['Census Blocks'][0].STATE
         let county = addressMatch.geographies['Census Blocks'][0].COUNTY
@@ -204,10 +208,10 @@ export default new Vuex.Store({
         
     },
     readACSDataURL: function(context, variable){
-      // console.log(context.state.blockData)
-      // console.log(context.state.datasetBlockGroups.features)
+      console.log(context.state.blockData)
+      console.log(context.state.dataBlocks.features)
 
-      context.state.datasetBlockGroups.features.map(function(d,i){
+      context.state.dataBlocks.features.map(function(d,i){
         context.state.blockData.forEach(function(j,k){
           if(d.properties.GEOID == j[0]){
             return d.properties['dataValue'] = j[1];
@@ -215,8 +219,8 @@ export default new Vuex.Store({
         })
       });
 
-      console.log(context.state.datasetBlockGroups.features)
-      context.commit('setDatasetBlockGroups', context.state.datasetBlockGroups)
+      console.log(context.state.dataBlocks.features)
+      context.commit('setDatasetBlockGroups', context.state.dataBlocks)
     }
   }
 })

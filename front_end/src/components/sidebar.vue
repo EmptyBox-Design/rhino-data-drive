@@ -31,12 +31,19 @@ export default {
  computed:{
    ...mapGetters({
      datasets: 'getdatasetNames',
-     datasetFlag: 'getDatasetFlag'
+     datasetFlag: 'getDatasetFlag',
+     geojsonData: 'getDatasetBlockGroups'
    })
  },
  methods:{
    download(){
-     console.log("downloading dataset");
+     console.log("downloading dataset", this.geojsonData);
+
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.geojsonData));
+    var dlAnchorElem = document.getElementById('downloadAnchorElem');
+    dlAnchorElem.setAttribute("href",dataStr);
+    dlAnchorElem.setAttribute("download", "scene.json");
+    dlAnchorElem.click();
    },
    dataSelect(variable){
      this.$store.dispatch("readACSDataURL", variable)
