@@ -40,6 +40,7 @@ export default {
   methods: {
     onSubmit(evt) {
       evt.preventDefault()
+      this.geocodeURL = 'https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress?address=' + this.form.address.replace(/ /g, '+') + '&benchmark=Public_AR_Census2010&vintage=Census2010_Census2010&layers=14&format=json'
       this.nomatimURL = 'https://nominatim.openstreetmap.org/search/' + this.form.address.replace(/ /g, '%20') + '?format=json&addressdetails=1&limit=1&polygon_svg=1'
       this.$store.dispatch('readDatasetAddress', this.nomatimURL)
 
