@@ -80,6 +80,15 @@ export default {
             break
         }
       })
+    },
+    addFillLayer: function() {
+      this.$store.subscribe((mutation, state) => {
+        switch (mutation.type) {
+          case 'setDatasetBlockGroups':
+          
+          break
+        }
+      })
     }
   }
 }
