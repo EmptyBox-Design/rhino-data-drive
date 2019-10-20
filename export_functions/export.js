@@ -59,40 +59,129 @@ rhino3dm().then(function(m) {
 
 function export3dm() {
 
-  // RHINO FILE
-  _file = new rhino.File3dm();
-  // units ? convert/ project X and Y... Z is default 0
+    // RHINO FILE
+    _file = new rhino.File3dm();
 
-   // TO RHINO POINT
-   var point = new rhino.Point([10,10,0]);
-   point.setUserString("userstring","geometry");
-  //console.log("point", point);
+  // INCOMING GEOJSON
+   // units ? convert/ project X and Y... Z is default 0
+  sample.features.forEach(feature => {
+
+    if (feature.geometry.type == "Point") {
+      var geo = feature.geometry.coordinates;
+      var point = new rhino.Point([geo[0],geo[1],0]);
+
+      var prop = feature.properties;
+      var att = new rhino.ObjectAttributes();
+    
+      Object.keys(prop).forEach(p => {
+        att.setUserString(p, prop[p]);
+        point.setUserString(p,prop[p]);
+      });
+
+      _file.objects().add(point, att); 
+      //console.log(point);
+    }
+    else if(feature.geometry.type == "LineString" )
+    {
+      //console.log("line", feature.geometry.coordinates)
+      var geo = feature.geometry.coordinates;
+      _points = new rhino.Point3dList();
+      console.log(geo);
+      geo.forEach(g => {
+        _points.add(g[0],g[1],0);
+      });
+
+      var curve = rhino.NurbsCurve.create(false,1, _points);
+
+      var prop = feature.properties;
+      var att = new rhino.ObjectAttributes();
+    
+      Object.keys(prop).forEach(p => {
+        att.setUserString(p, prop[p]);
+        curve.setUserString(p,prop[p]);
+      });
+
+      _file.objects().addCurve(curve, att); 
+
+    }
+    else if(feature.geometry.type == "Polygon" ){
+      var geo = feature.geometry.coordinates;
+      _points = new rhino.Point3dList();
+      console.log(geo);
+      geo[0].forEach(g => {
+        _points.add(g[0],g[1],0);
+      });
+
+      var curve = rhino.NurbsCurve.create(false,1, _points);
+
+      var prop = feature.properties;
+      var att = new rhino.ObjectAttributes();
+    
+      Object.keys(prop).forEach(p => {
+        att.setUserString(p, prop[p]);
+        curve.setUserString(p,prop[p]);
+      });
+
+      _file.objects().addCurve(curve, att); 
+    }
+    
+});
+
+
 
  
-   // TO RHINO CURVE
-   _points = new rhino.Point3dList();
-   _points.add(10,10,10);
-   _points.add(1,1,1);
+//--------------------------TEST TEST
+  //  // TO RHINO POINT
+  //  var point = new rhino.Point([10,10,0]);
+  //  point.setUserString("userstring","geometry");
+  // //console.log("point", point);
 
-   var curve = rhino.NurbsCurve.create(false,1, _points);
-   curve.setUserString("userstring","geometry");
-   //console.log(curve);
+ 
+  //  // TO RHINO CURVE
+  //  _points = new rhino.Point3dList();
+  //  _points.add(10,10,10);
+  //  _points.add(1,1,1);
 
-   // ATTRIBUTES
-   var att = new rhino.ObjectAttributes();
-   att.setUserString("hello", "elcin");
-   //att.setUserString("layer", "0"); // this sets the index, u might need to create the layer first
+  //  var curve = rhino.NurbsCurve.create(false,1, _points);
+  //  curve.setUserString("userstring","geometry");
+  //  //console.log(curve);
+
+  //  // ATTRIBUTES
+  //  var att = new rhino.ObjectAttributes();
+  //  att.setUserString("hello", "elcin");
+  //  //att.setUserString("layer", "0"); // this sets the index, u might need to create the layer first
   
-  // attributes layer, name, geometry
+  // // attributes layer, name, geometry
 
   
-  //_file.objects().addCurve(curve);
-  _file.objects().add(point, att); // this one worked
-  _file.objects().addCurve(curve, att); 
+  // //_file.objects().addCurve(curve);
+  // _file.objects().add(point, att); // this one worked
+  // _file.objects().addCurve(curve, att); 
  
 
-   console.log(_file);
+   //--------------------------------------------------------
 
+
+
+
+   console.log(_file.objects());
+
+  //  //DOWNLOAD
+
+  //_file.write("model9999.3dm", 0);
+  // //  var link = document.createElement("a");
+  //  var binaryData = [];
+  //  binaryData.push(_file.toByteArray());
+
+  // //   link.href = URL.createObjectURL(new Blob(binaryData,));
+	// // 	link.download = 'modelblob.3dm';
+	// // 	link.dispatchEvent( new MouseEvent( 'click' ) );
+
+    
+  // var download = document.createElement('a');
+  // download.href = 'data:application/octet-stream,' + new Blob(binaryData);
+  // download.download = 'model7.3dm';
+  // download.click();
 
   
 }
