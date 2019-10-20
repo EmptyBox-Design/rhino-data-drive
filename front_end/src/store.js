@@ -15,7 +15,8 @@ export default new Vuex.Store({
     ],
     boundingBox: [],
     datasetFlag: false,
-    blockGroupFlag: false
+    blockGroupFlag: false,
+    blockGroupData: []
   },
   getters:{
     getDatasetAddress (state){
@@ -35,10 +36,14 @@ export default new Vuex.Store({
     },
     getBlockGroupFlag(state){
       return state.blockGroupFlag
+    },
+    getBlockGroupData(state){
+      return state.blockGroupData
     }
   },
   mutations: {
     setDatasetAddress (state, newDatasetAddress) {
+      console.log("TCL: setDatasetAddress -> newDatasetAddress", newDatasetAddress)
       state.datasetAddress = newDatasetAddress
     },
     setDatasetBlockGroups (state, newDatasetBlockGroups) {
@@ -53,28 +58,101 @@ export default new Vuex.Store({
     },
     setBlockGroupFlag(state, newBlockGroupFlag){
       state.blockGroupFlag = newBlockGroupFlag
+    },
+    setBlockGroupData(state, newData){
+      state.blockGroupData = newData;
     }
   },
   actions: {
-    readBoundingBox: function(context,url){
-      axios.get(url, function(){
+    readDatasetAddress: function(context,url){
+      console.log("TCL: url", url)
 
-      var json = {"result":
-        {"input":
-          {"benchmark":   {"id":"9","benchmarkName":"Public_AR_Census2010","benchmarkDescription":"Public Address Ranges - Census 2010 Benchmark","isDefault":false},
-          "vintage":{
-            "id":"910","vintageName":"Census2010_Census2010","vintageDescription":"Census2010 Vintage - Census2010 Benchmark","isDefault":true},
-            "address":{"address":"44 wyckoff st, brooklyn, ny"}
-          },
-          "addressMatches":[
-            {
-              "matchedAddress":"44 Wyckoff St, BROOKLYN, NY, 11201","coordinates":{"x":-73.991974,"y":40.68648},"tigerLine":{"tigerLineId":"59075230","side":"R"},"addressComponents":{"fromAddress":"2","toAddress":"70","preQualifier":"","preDirection":"","preType":"","streetName":"Wyckoff","suffixType":"St","suffixDirection":"","suffixQualifier":"","city":"BROOKLYN","state":"NY","zip":"11201"},"geographies":{"Census Blocks":[{"SUFFIX":"","POP100":444,"GEOID":"360470069004001","CENTLAT":"+40.6862799","BLOCK":"4001","AREAWATER":0,"STATE":"36","BASENAME":"4001","OID":210403974805770,"LSADC":"BK","FUNCSTAT":"S","INTPTLAT":"+40.6862799","NAME":"Block 4001","OBJECTID":6605050,"TRACT":"006900","CENTLON":"-073.9924418","BLKGRP":"4","AREALAND":19909,"HU100":192,"INTPTLON":"-073.9924418","MTFCC":"G5040","LWBLKTYP":"L","UR":"","COUNTY":"047"}]}}
-          ]
+      // axios.defaults.headers.get['Access-Control-Allow-Origin'] = '*';
+      // axios.defaults.headers.get['Content-Type'] ='application/x-www-form-urlencoded';
+
+      // axios.get(url, function(){
+      //   console.log("TCL: url", url)
+      var json = {
+        "result": {
+            "input": {
+                "benchmark": {
+                    "id": "9",
+                    "benchmarkName": "Public_AR_Census2010",
+                    "benchmarkDescription": "Public Address Ranges - Census 2010 Benchmark",
+                    "isDefault": false
+                },
+                "vintage": {
+                    "id": "910",
+                    "vintageName": "Census2010_Census2010",
+                    "vintageDescription": "Census2010 Vintage - Census2010 Benchmark",
+                    "isDefault": true
+                },
+                "address": {
+                    "address": "51 Madison Ave, New York, NY 10010"
+                }
+            },
+            "addressMatches": [
+                {
+                    "matchedAddress": "51 Madison Ave, NEW YORK, NY, 10010",
+                    "coordinates": {
+                        "x": -73.986404,
+                        "y": 40.743004
+                    },
+                    "tigerLine": {
+                        "tigerLineId": "59653485",
+                        "side": "R"
+                    },
+                    "addressComponents": {
+                        "fromAddress": "45",
+                        "toAddress": "61",
+                        "preQualifier": "",
+                        "preDirection": "",
+                        "preType": "",
+                        "streetName": "Madison",
+                        "suffixType": "Ave",
+                        "suffixDirection": "",
+                        "suffixQualifier": "",
+                        "city": "NEW YORK",
+                        "state": "NY",
+                        "zip": "10010"
+                    },
+                    "geographies": {
+                        "Census Blocks": [
+                            {
+                                "SUFFIX": "",
+                                "POP100": 0,
+                                "GEOID": "360610056001003",
+                                "CENTLAT": "+40.7427393",
+                                "BLOCK": "1003",
+                                "AREAWATER": 0,
+                                "STATE": "36",
+                                "BASENAME": "1003",
+                                "OID": 210403969808181,
+                                "LSADC": "BK",
+                                "FUNCSTAT": "S",
+                                "INTPTLAT": "+40.7427393",
+                                "NAME": "Block 1003",
+                                "OBJECTID": 6661321,
+                                "TRACT": "005600",
+                                "CENTLON": "-073.9855624",
+                                "BLKGRP": "1",
+                                "AREALAND": 12257,
+                                "HU100": 0,
+                                "INTPTLON": "-073.9855624",
+                                "MTFCC": "G5040",
+                                "LWBLKTYP": "L",
+                                "UR": "",
+                                "COUNTY": "061"
+                            }
+                        ]
+                    }
+                }
+            ]
         }
-      }
+    }
       // pick the first matching address as the most likely candidate
       var addressMatch = json.result.addressMatches[0]
-
+      console.log("TCL: addressMatch", addressMatch)
       context.commit('setDatasetAddress', addressMatch)
 
       // this is how I'm generating a bounding area to capture block groups
@@ -83,7 +161,7 @@ export default new Vuex.Store({
       var minY = addressMatch.coordinates.y - .005
       var maxY = addressMatch.coordinates.y + .005
 
-      var blockGroupURL = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/10/query?where=1%3D1&text=&objectIds=&time=&geometry="+this.boundingBox+"&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelContains&relationParam=&outFields=&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=4326&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentsOnly=false&datumTransformation=&parameterValues=&rangeValues=&f=geojson"
+      // var blockGroupURL = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/10/query?where=1%3D1&text=&objectIds=&time=&geometry="+this.boundingBox+"&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelContains&relationParam=&outFields=&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=4326&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentsOnly=false&datumTransformation=&parameterValues=&rangeValues=&f=geojson"
 
       var blockGroupsURL = 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2019/MapServer/10/query?where=1%3D1&text=&objectIds=&time=&geometry=' + minX + '%2C+' + maxY + '%2C+' + maxX + '%2C+' + minY + '&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelContains&relationParam=&outFields=&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=4326&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentsOnly=false&datumTransformation=&parameterValues=&rangeValues=&f=geojson'
 
@@ -105,7 +183,7 @@ export default new Vuex.Store({
         return axios.get(countyURL)
         }).then(response =>{
           console.log(response.data)
-
+          var blockList = []
           for(var i = 0;i < response.data.length; i++){
 
             let stateCode = response.data[i][3]
@@ -114,11 +192,12 @@ export default new Vuex.Store({
             let blockGroupCode = response.data[i][5]
 
             let geoid = stateCode + countyCode + tractCode + blockGroupCode
-
-            console.log(geoid)
+            // console.log(geoid)
+            blockList.push((geoid, response.data[1]))
           }
+          context.commit('setBlockGroupData', blockList)
         })
-      })
+      // })
     },
     readACSDataURL: function(context, variable){
       console.log("TCL: variable", variable)
