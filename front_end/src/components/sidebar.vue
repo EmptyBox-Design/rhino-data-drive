@@ -1,25 +1,20 @@
 <template>
 <div class="wrapper">
-  <nav id="sidebar">
-    <div class="row">
-      <div class="col-12 sidebar-header">
-        <h1>Data Drive</h1>
+  <nav id="sidebar" class="p-3">
+    <div class="row h-100">
+      <div class="col sidebar-header pb-4">
+        <h1 class="font-weight-bold">Data Drive</h1>
       </div>
-    </div>
-    <div class="row">
       <div class="col-12">
-        <h4>Please Select Your Dataset</h4>
+        <h5>Please Select Your Dataset</h5>
         <div class="active">
-          <b-dropdown id="dropdown-1" text="Dropdown Button" class="m-md-2">
+          <b-dropdown id="dropdown-1" text="Dropdown Button" class="m-0 w-100">
             <b-dropdown-item v-for="(dataset, index) in datasets" :key="index" @click="dataSelect(dataset.variable)">{{dataset.name}}</b-dropdown-item>
           </b-dropdown>
         </div>
       </div>
-    </div>
-    <div class="spacer-md"></div>
-    <div class="row">
-      <div class="col-8 active mx-auto">
-        <b-button type="submit" variant="primary" @click="download">Download</b-button>
+      <div class="col align-self-end active">
+        <b-button class="w-100" type="submit" variant="primary" @click="download">Download</b-button>
       </div>
     </div>
   </nav>
@@ -62,9 +57,6 @@ export default {
 </script>
 
 <style lang="scss">
-.spacer-md{
-  padding: 4rem;
-}
 .wrapper {
   display: flex;
   width: 100%;
@@ -78,6 +70,7 @@ export default {
 #sidebar {
   min-width: 250px;
   max-width: 250px;
+  height: 100vh;
 }
 
 #sidebar.active {
@@ -86,7 +79,6 @@ export default {
 #sidebar {
   min-width: 250px;
   max-width: 250px;
-  min-height: calc(100vh - #{$navbar-height});
 
   z-index: 2;
 
@@ -99,5 +91,5 @@ export default {
   #sidebar.active {
       margin-left: 0;
   }
-}  
+}
 </style>
