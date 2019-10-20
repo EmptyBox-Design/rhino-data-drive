@@ -110,7 +110,8 @@ export default {
 }
 #map-parent{
   position: absolute;
-  height: calc(100vh - #{$navbar-height});
+  // height: calc(100vh - #{$navbar-height});
+  height: 100vh;
 
   left: 0;
   top: 0;
