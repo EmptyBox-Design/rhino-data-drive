@@ -91,6 +91,19 @@ export default new Vuex.Store({
         return axios.get(countyURL)
         }).then(response =>{
           console.log(response.data)
+
+          for(var i = 0;i < response.data.length; i++){
+
+            let stateCode = response.data[i][3]
+            let countyCode = response.data[i][4]
+            let tractCode = response.data[i][2]
+            let blockGroupCode = response.data[i][5]
+
+            let geoid = stateCode + countyCode + tractCode + blockGroupCode
+
+            console.log(geoid)
+          }
+
       })
     },
     readACSDataURL: function(context, variable){
