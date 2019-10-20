@@ -37,12 +37,13 @@ export default {
  },
  methods:{
    download(){
-     console.log("downloading dataset", this.geojsonData);
+    //  console.log("downloading dataset", );
+    let json = this.geojsonData
 
-    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.geojsonData));
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json));
     var dlAnchorElem = document.getElementById('downloadAnchorElem');
     dlAnchorElem.setAttribute("href",dataStr);
-    dlAnchorElem.setAttribute("download", "scene.json");
+    dlAnchorElem.setAttribute("download", "download.geojson");
     dlAnchorElem.click();
    },
    dataSelect(variable){
