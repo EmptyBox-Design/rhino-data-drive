@@ -64,8 +64,7 @@ export default {
     modelInputSubscriber: function () {
       this.$store.subscribe((mutation, state) => {
         switch (mutation.type) {
-          case 'settDatasetAddress':
-            console.log(this.address)
+          case 'setDatasetAddress':
             let lat = parseFloat(this.address[0].lat)
             let lng = parseFloat(this.address[0].lon)
             this.mapFlyTo(lng, lat)

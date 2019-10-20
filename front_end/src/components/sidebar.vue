@@ -11,7 +11,7 @@
         <h4>Please Select Your Dataset</h4>
         <div class="active">
           <b-dropdown id="dropdown-1" text="Dropdown Button" class="m-md-2">
-            <b-dropdown-item v-for="(dataset, index) in datasets" :key="index">{{dataset.name}}</b-dropdown-item>
+            <b-dropdown-item v-for="(dataset, index) in datasets" :key="index" @click="dataSelect(dataset.variable)">{{dataset.name}}</b-dropdown-item>
           </b-dropdown>
         </div>
       </div>
@@ -42,6 +42,9 @@ export default {
   methods:{
     download(){
       console.log("downloading dataset");
+    },
+    dataSelect(variable){
+      this.$store.dispatch("readACSDataURL", variable)
     }
   }
 }
