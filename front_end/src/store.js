@@ -194,7 +194,7 @@ export default new Vuex.Store({
             let geoid = tractCode+stateCode + countyCode + blockGroupCode
             // console.log("TCL: geoid", geoid)
 
-            dataList.push([geoid, response.data[i][1]])
+            dataList.push([geoid, parseFloat(response.data[i][1])])
           }
           // console.log("data list", dataList)
           context.commit('setBlockData', dataList)

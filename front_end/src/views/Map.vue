@@ -100,8 +100,7 @@ export default {
         switch (mutation.type) {
           case 'setDatasetBlockGroups':
 
-            console.log("fill layer")
-            console.log(this.mapData)
+            console.log("fill layer", this.mapData)
 
             this.map.addLayer({
               'id': 'urban-areas-fill',
@@ -113,8 +112,12 @@ export default {
               'layout': {},
               'paint': {
                 'fill-color': {
+                  // 'type': "categorical",
                   'property': 'dataValue',
-                  'stops': [[20000, '#fff'], [200000, '#f00']]
+                  'stops': [
+                    [0, 'white'], 
+                    [3000, 'firebrick']
+                  ]
                 },
                 'fill-opacity': 0.4
               }
