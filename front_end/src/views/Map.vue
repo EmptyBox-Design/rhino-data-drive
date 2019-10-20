@@ -64,6 +64,16 @@ export default {
     modelInputSubscriber: function () {
       this.$store.subscribe((mutation, state) => {
         switch (mutation.type) {
+          case 'setData':
+            console.log("firing the death star")
+            break
+        }
+      })
+    },
+    // fires whenever the address is updated in the $store
+    modelInputSubscriber: function () {
+      this.$store.subscribe((mutation, state) => {
+        switch (mutation.type) {
           case 'setDatasetAddress':
             let lat = parseFloat(this.address[0].lat)
             let lng = parseFloat(this.address[0].lon)

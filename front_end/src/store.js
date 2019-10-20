@@ -25,6 +25,9 @@ export default new Vuex.Store({
   mutations: {
     setDatasetAddress (state, newDatasetAddress) {
       state.datasetAddress = newDatasetAddress
+    },
+    setData(state,newData){
+      state.data = newData
     }
   },
   actions: {
