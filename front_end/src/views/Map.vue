@@ -40,10 +40,12 @@ export default {
   computed:{
     ...mapGetters({
       address: 'getDatasetAddress',
+      mapData: 'getDatasetBlockGroups'
     })
   },
   mounted(){
     this.modelInputSubscriber();
+    this.addFillLayer();
 
     var fromProjection = 'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]'
     var toProjection = 'PROJCS["WGS 84 / Pseudo-Mercator",GEOGCS["Popular Visualisation CRS",DATUM["Popular_Visualisation_Datum",SPHEROID["Popular Visualisation Sphere",6378137,0,AUTHORITY["EPSG","7059"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6055"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4055"]],UNIT["metre",1,AUTHORITY["EPSG","9001"]],PROJECTION["Mercator_1SP"],PARAMETER["central_meridian",0],PARAMETER["scale_factor",1],PARAMETER["false_easting",0],PARAMETER["false_northing",0],AUTHORITY["EPSG","3785"],AXIS["X",EAST],AXIS["Y",NORTH]]'
@@ -66,7 +68,7 @@ export default {
         center: mapCenter,
         zoom: 15,
         bearing: 0,
-          speed: 1.2,
+          speed: 3,
           curve: 1,
           easing: function (t) { return t; }
         });
@@ -97,20 +99,25 @@ export default {
       this.$store.subscribe((mutation, state) => {
         switch (mutation.type) {
           case 'setDatasetBlockGroups':
-            let json = parseFloat(this)
-            console.log(json);
+
+            console.log("fill layer", this.mapData)
+
             this.map.addLayer({
               'id': 'urban-areas-fill',
               'type': 'fill',
               'source': {
                 'type': 'geojson',
-                'data': 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_50m_urban_areas.geojson'
+                'data': this.mapData
               },
               'layout': {},
               'paint': {
                 'fill-color': {
-                  property: 'median-income',
-                  stops: [[20000, '#fff'], [120000, '#f00']]
+                  // 'type': "categorical",
+                  'property': 'dataValue',
+                  'stops': [
+                    [0, 'white'], 
+                    [3000, 'firebrick']
+                  ]
                 },
                 'fill-opacity': 0.4
               }
